@@ -1,0 +1,29 @@
+{
+    "homepage": {
+    "titles": {
+        "articles": {
+            "Travel": "#post-67",
+            "Renters": "#post-65",
+            "Liability": "#post-61",
+            "Long-Term-Care": "#post-59",
+            "Business": "#post-57",
+            "Pet": "#post-55",
+            "HomeOwners": "#post-53",
+            "Life": "#post-51",
+            "Health": "#post-49",
+            "Auto": "#post-14"
+        }
+    },
+    "title": ".entry-title a",
+    "read-more": ".entry-summary a",
+    "comment": "footer.entry-meta .comments-link a"
+    },
+    "insurance_page": {
+        "comment_box": {
+            "comment": "#commentform textarea",
+            "author": "input#author",
+            "email": "input#email",
+            "website": "input#url"
+        }
+    }
+}
