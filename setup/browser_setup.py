@@ -24,7 +24,9 @@ class BrowserSetup:
 
         # Browser Selection
         if browser_name == "random":
-            browser_name = random.choice(SUPPORTED_BROWSERS)
+            browser_name = random.choices(
+                SUPPORTED_BROWSERS, weights=[70, 20, 10], k=1
+            )[0]
         print(f"Browser name: {browser_name}")
 
         if device_type == "desk":
