@@ -37,7 +37,7 @@ def main():
             print("Please enter a valid number.")
             return
 
-    device_type = "desk"        # desk, mobile
+    device_type = "both"        # desk, mobile
     proxy_active = True         # True, False
     add_utm = True             # True, False
     visit_other_sites = False    # True, False
@@ -57,7 +57,7 @@ def main():
                 device_type,
                 proxy_active,
                 device_name="random",       # random
-                browser_name="random",      # random, chrome, firefox, edge, safari
+                browser_name="chrome",      # random, chrome, firefox, edge, safari
                 region="us"                 # rd, us, na, au, as, eu
             )
 

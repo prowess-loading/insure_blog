@@ -66,6 +66,8 @@ class SmoothScroll:
         attempts = 0
         scrolling_up = False
         toggle_up_once = False
+        total_scroll_height = self.driver.execute_script(
+            "return document.body.scrollHeight")
 
         early_quit_threshold = random.uniform(
             0.6, 0.8) * total_scroll_height if random.random() < 0.2 else None
