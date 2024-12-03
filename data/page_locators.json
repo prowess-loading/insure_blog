@@ -15,15 +15,10 @@
         }
     },
     "title": ".entry-title a",
-    "read-more": ".entry-summary a",
-    "comment": "footer.entry-meta .comments-link a"
+    "read-more": ".entry-summary a"    
     },
-    "insurance_page": {
-        "comment_box": {
-            "comment": "#commentform textarea",
-            "author": "input#author",
-            "email": "input#email",
-            "website": "input#url"
-        }
+    "insurance_page": {        
+        "prev": "span.prev",
+        "next": "span.next"
     }
 }

@@ -2,7 +2,7 @@ import json
 import random
 import time
 from selenium.webdriver.common.by import By
-from setup.smooth_scroll_old import SmoothScroll
+from setup.smooth_scroll import SmoothScroll
 
 
 class HomePage:
@@ -19,7 +19,7 @@ class HomePage:
             "Long-Term-Care",
             "Business",
             "Pet",
-            "Homeowners",
+            "HomeOwners",
             "Life",
             "Health",
             "Auto",
@@ -42,7 +42,5 @@ class HomePage:
         selected_insurance_click_element = random.choice(
             [page_title, read_more])
 
-        # selected_insurance_click_element = "#post-59 .entry-title a"
-
         navigator = SmoothScroll(self.driver)
-        navigator.navigate_and_scroll(selected_insurance_click_element)
+        navigator.scroll_to_single(selected_insurance_click_element)

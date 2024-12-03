@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from setup.smooth_scroll_old import SmoothScroll
+from setup.smooth_scroll import SmoothScroll
 from selenium.common.exceptions import ElementNotInteractableException
 from data.agents_data import desk_agents
 from data.utms import main_page, utms
@@ -65,16 +65,6 @@ def adjust_dimensions(device, browser_deltas, browser_name):
 def set_window_size(driver, device, browser_deltas, browser_name):
     width, height = adjust_dimensions(device, browser_deltas, browser_name)
     driver.set_window_size(width, height)
-
-
-def scroll_to_single(driver, target_selector):
-    navigator = SmoothScroll(driver)
-    navigator.scroll_to_single_element(target_selector)
-
-
-def scroll_to_multi_or_end(driver, speed, target_selector=None):
-    navigator = SmoothScroll(driver, speed=speed)
-    navigator.navigate_and_scroll(target_selector)
 
 
 def random_wait():

@@ -2,6 +2,7 @@ import sys
 import time
 from setup.browser_setup import BrowserSetup
 from pages.homepage import HomePage
+from pages.other_visits import OtherVisits
 from pages.insurance_details import InsuranceDetails
 import random
 from setup import utils
@@ -39,6 +40,7 @@ def main():
     device_type = "desk"        # desk, mobile
     proxy_active = True         # True, False
     add_utm = False             # True, False
+    visit_other_sites = True    # True, False
 
     # Execute tests
     for i in range(1, num_tests + 1):
@@ -59,7 +61,12 @@ def main():
                 region="us"                 # rd, us, na, au, as, eu
             )
 
+            if visit_other_sites:
+                other_visits = OtherVisits(driver)
+                other_visits.process_urls_with_navigation()
+
             target_url = utils.target_url(add_utm)
+
             try:
                 driver.get(target_url)
             except TimeoutException:
@@ -70,9 +77,7 @@ def main():
                 driver, homepage.selected_insurance_name)
 
             homepage.open_insurance_page()
-
-            time.sleep(10)
-            # insurance_page.scroll_insurance_details_page()
+            insurance_page.scroll_insurance_details_page()
 
         finally:
             if driver:
