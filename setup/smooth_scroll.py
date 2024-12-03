@@ -6,7 +6,7 @@ from selenium.common.exceptions import NoSuchElementException
 
 
 class SmoothScroll:
-    def __init__(self, driver, speed=20.0):
+    def __init__(self, driver, speed=30.0):
         self.driver = driver
         self.speed = speed
 
