@@ -39,8 +39,8 @@ def main():
 
     device_type = "desk"        # desk, mobile
     proxy_active = True         # True, False
-    add_utm = False             # True, False
-    visit_other_sites = True    # True, False
+    add_utm = True             # True, False
+    visit_other_sites = False    # True, False
 
     # Execute tests
     for i in range(1, num_tests + 1):
