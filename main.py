@@ -57,7 +57,7 @@ def main():
                 device_type,
                 proxy_active,
                 device_name="random",       # random
-                browser_name="chrome",      # random, chrome, firefox, edge, safari
+                browser_name="random",      # random, chrome, firefox, edge, safari
                 region="us"                 # rd, us, na, au, as, eu
             )
 
