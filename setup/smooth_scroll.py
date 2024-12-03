@@ -1,5 +1,6 @@
 import random
 from time import sleep
+from setup import utils
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
@@ -164,7 +165,7 @@ class SmoothScroll:
             # Handle early quit logic
             if early_quit_threshold and new_position >= early_quit_threshold:
                 print(f"Early quitting... Navigating to {next_url}")
-                self.driver.get(next_url)
+                utils.open_url_with_retry(self.driver, next_url)
                 return
 
             # Detect stagnation in scrolling
@@ -172,7 +173,7 @@ class SmoothScroll:
                 attempts += 1
                 if attempts >= max_attempts:
                     print("Scrolling stagnated. Navigating to the next URL...")
-                    self.driver.get(next_url)
+                    utils.open_url_with_retry(self.driver, next_url)
                     return
             else:
                 attempts = 0  # Reset attempts if movement detected
@@ -193,5 +194,5 @@ class SmoothScroll:
             # Check if we have reached the end
             if new_position >= total_scroll_height - 1:
                 print("Reached the end of the page. Navigating to the next URL...")
-                self.driver.get(next_url)
+                utils.open_url_with_retry(self.driver, next_url)
                 return

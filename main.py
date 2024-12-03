@@ -68,7 +68,7 @@ def main():
             target_url = utils.target_url(add_utm)
 
             try:
-                driver.get(target_url)
+                utils.open_url_with_retry(driver, target_url)
             except TimeoutException:
                 print("Network timeout occurred, refreshing the page...")
 

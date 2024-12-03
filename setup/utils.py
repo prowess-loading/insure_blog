@@ -1,13 +1,8 @@
-from datetime import datetime, timedelta
-import json
 import random
 from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
-from setup.smooth_scroll import SmoothScroll
+from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import ElementNotInteractableException
 from data.agents_data import desk_agents
 from data.utms import main_page, utms
@@ -22,6 +17,29 @@ def target_url(add_utm):
         return f"{base_url}{utm_param}"
     else:
         return random.choice(main_page)
+
+
+def open_url_with_retry(driver, url, max_retries=3, retry_delay=5):
+    for attempt in range(max_retries):
+        try:
+            driver.get(url)
+
+            # Check if the page contains "502 Bad Gateway"
+            if "502 Bad Gateway" in driver.page_source:
+                print(
+                    f"502 error detected. Retrying... ({attempt + 1}/{max_retries})")
+                sleep(retry_delay)  # Wait before retrying
+                continue
+
+            # If no error, break out of the retry loop
+            print("Page loaded successfully.")
+            break
+        except TimeoutException:
+            print(
+                f"Timeout occurred. Retrying... ({attempt + 1}/{max_retries})")
+            sleep(retry_delay)
+    else:
+        print("Failed to load the page after multiple attempts.")
 
 
 def get_mobile_user_agent(device, browser_name):

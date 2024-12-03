@@ -1,6 +1,7 @@
 import random
 from setup.smooth_scroll import SmoothScroll
 from data import website_visit
+from setup import utils
 
 
 class OtherVisits:
@@ -18,7 +19,7 @@ class OtherVisits:
 
         for i, url in enumerate(selected_urls):
             print(f"Processing URL {i+1}/{len(selected_urls)}: {url}")
-            self.driver.get(url)
+            utils.open_url_with_retry(self.driver, url)
 
             next_url = selected_urls[i + 1] if i + \
                 1 < len(selected_urls) else None
