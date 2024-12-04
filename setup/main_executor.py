@@ -18,7 +18,7 @@ class MainExecutor:
             add_utm=True,
             visit_other_sites=False,
             enable_ad_click=True,
-            ad_click_frequency=4
+            ad_click_frequency=3
     ):
         self.device_type = device_type
         self.proxy_active = proxy_active
@@ -86,12 +86,12 @@ class MainExecutor:
         if click_ad:
             random_target = random.choice(["homepage", "insurance_page"])
             if random_target == "homepage":
-                ad_clicker.select_random_ad()
                 print("Clicking on ad in Homepage...")
+                ad_clicker.select_random_ad()
             else:
                 homepage.open_insurance_page()
-                ad_clicker.select_random_ad()
                 print("Clicking on ad in Insurance Page...")
+                ad_clicker.select_random_ad()
         else:
             homepage.open_insurance_page()
             insurance_page.scroll_insurance_details_page()

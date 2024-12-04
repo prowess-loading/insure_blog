@@ -1,7 +1,6 @@
 import random
 from time import sleep
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import ElementNotInteractableException
 from data.agents_data import desk_agents
@@ -87,7 +86,7 @@ def random_wait():
     sleep(sec)
 
 
-def should_click_ad(test_index, interval=6):
+def should_click_ad(test_index, interval):
     interval_start = ((test_index - 1) // interval) * interval + 1
     interval_end = interval_start + interval - 1
     return test_index == random.randint(interval_start, interval_end)

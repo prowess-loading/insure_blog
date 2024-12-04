@@ -48,8 +48,7 @@ class AdClicker:
 
         primary_visible_ads = self.get_primary_ads()
         side_ads = self.get_side_ads()
-        # all_ads = primary_visible_ads + side_ads
-        all_ads = side_ads
+        all_ads = primary_visible_ads + side_ads
 
         if all_ads:
             selected_ad = random.choice(all_ads)
