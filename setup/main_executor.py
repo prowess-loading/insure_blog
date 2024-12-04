@@ -15,7 +15,7 @@ class MainExecutor:
             device_name="random",
             browser_name="random",
             region="us",
-            add_utm=True,
+            add_utm=False,
             visit_other_sites=False,
             enable_ad_click=True,
             ad_click_frequency=1

@@ -1,5 +1,5 @@
 main_page = [
-    "https://sub01.gameappszone.com/"]
+    "http://sub01.gameappszone.com/?utm_source=facebook&utm_medium=Facebook_Feed&utm_campaign=insurance&utm_content=image_logo&utm_id=6599686407630"]
 
 # utms = [
 #     "?utm_source=facebook&utm_medium=Facebook_Feed&utm_campaign=emi_calculator&utm_content=image_logo&utm_id=6599686407629",
