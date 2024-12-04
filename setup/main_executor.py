@@ -18,7 +18,7 @@ class MainExecutor:
             add_utm=True,
             visit_other_sites=False,
             enable_ad_click=True,
-            ad_click_frequency=3
+            ad_click_frequency=2
     ):
         self.device_type = device_type
         self.proxy_active = proxy_active
