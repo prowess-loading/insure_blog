@@ -3,7 +3,6 @@ import random
 import time
 from selenium.webdriver.common.by import By
 from setup.smooth_scroll import SmoothScroll
-from setup import utils
 
 
 class InsuranceDetails:

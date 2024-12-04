@@ -30,9 +30,6 @@ def open_url_with_retry(driver, url, max_retries=3, retry_delay=5):
                     f"502 error detected. Retrying... ({attempt + 1}/{max_retries})")
                 sleep(retry_delay)  # Wait before retrying
                 continue
-
-            # If no error, break out of the retry loop
-            print("Page loaded successfully.")
             break
         except TimeoutException:
             print(
@@ -90,6 +87,12 @@ def random_wait():
     sleep(sec)
 
 
+def should_click_ad(test_index, interval=6):
+    interval_start = ((test_index - 1) // interval) * interval + 1
+    interval_end = interval_start + interval - 1
+    return test_index == random.randint(interval_start, interval_end)
+
+
 def fill_input(driver, locator, value):
 
     element = driver.find_element(By.CSS_SELECTOR, locator)
@@ -104,49 +107,3 @@ def fill_input(driver, locator, value):
     else:
         raise ElementNotInteractableException(
             "Element not interactable.")
-
-
-def select_dropdown(driver, locator, value, by=By.CSS_SELECTOR):
-    dropdown = Select(driver.find_element(by, locator))
-
-    try:
-        dropdown.select_by_visible_text(value)
-    except Exception:
-        try:
-            dropdown.select_by_value(value)
-        except Exception as e:
-            print(f"Failed to select '{value}' from dropdown: {e}")
-
-
-def click_element(driver, locator, by=By.XPATH):
-    element = driver.find_element(by, locator)
-    if element.is_displayed():
-        element.click()
-
-
-def get_random_number(min_value, max_value):
-    if min_value > max_value:
-        raise ValueError("min_value should not be greater than max_value.")
-
-    return random.randint(min_value, max_value)
-
-
-def single_element_normal_scroll(driver, locator):
-    element = driver.find_element(By.CSS_SELECTOR, locator)
-    driver.execute_script(
-        "arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element)
-    random_wait()
-
-
-def link_clicks(driver):
-    topic_element = 'ul.content-paragraph'
-    single_element_normal_scroll(driver, topic_element)
-
-    ul_element = driver.find_element(By.CSS_SELECTOR, topic_element)
-    li_elements = ul_element.find_elements(By.TAG_NAME, 'li')
-    index = get_random_number(0, len(li_elements) - 1)
-
-    random_li = li_elements[index]
-    print(f"Clicking on: {random_li.text}")
-    random_li.find_element(By.TAG_NAME, 'a').click()
-    random_wait()

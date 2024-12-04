@@ -30,7 +30,11 @@ class SmoothScroll:
             )
             if target_in_view:
                 sleep(3)
-                target_element.click()
+                try:
+                    target_element.click()
+                except Exception as e:
+                    print(
+                        f"Error: Element is not clickable or another issue occurred: {e}")
                 break
 
             # Adjust scroll amount based on direction
