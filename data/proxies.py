@@ -1,7 +1,7 @@
 import random
 
 proxy_config = {
-    "host": "pr.7vfi6pj1.lunaproxy.net",
+    "host": "na.7vfi6pj1.lunaproxy.net",
     "port": 12233,
     "username": "prowess_B6vvA",
     "password": "VU7mRaafTWhwd",
