@@ -2,18 +2,7 @@ import platform
 import subprocess
 import os
 from datetime import datetime
-
-
-def create_ad_click_log():
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    log_file = f"log/ad_click_{timestamp}.log"
-
-    # Create log file only if it doesn't exist
-    if not os.path.exists(log_file):
-        with open(log_file, "w") as file:
-            file.write("0\n")  # Initialize count at 0
-
-    return log_file
+from setup import utils
 
 
 def main():
@@ -22,7 +11,7 @@ def main():
         input("How many times do you want to run the test? (Max: 1000): "))
 
     # Create the log file when the run_instance starts
-    ad_click_log_file = create_ad_click_log()
+    ad_click_log_file = utils.create_ad_click_log()
 
     # Prepare the command to execute
     system_platform = platform.system()

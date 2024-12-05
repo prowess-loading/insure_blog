@@ -203,7 +203,7 @@ class SmoothScroll:
                 utils.open_url_with_retry(self.driver, next_url)
                 return
 
-    def scroll_to_ad_click(self, target_selector, quit_time, by=By.CSS_SELECTOR):
+    def scroll_to_ad_click(self, target_selector, quit_time, log_file, by=By.CSS_SELECTOR):
         try:
             target_element = self.driver.find_element(by, target_selector)
         except NoSuchElementException:
@@ -227,7 +227,7 @@ class SmoothScroll:
                     target_element.click()
                     sleep(quit_time)
                     self.driver.quit()
-                    utils.increment_ad_click_count()
+                    utils.increment_ad_click_count(log_file)
                 except Exception as e:
                     print(
                         f"Error: Element is not clickable or another issue occurred: {e}")

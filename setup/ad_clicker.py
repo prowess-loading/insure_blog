@@ -46,7 +46,7 @@ class AdClicker:
 
         return side_ads
 
-    def select_random_ad(self):
+    def select_random_ad(self, log_file):
         smooth_scroll = SmoothScroll(self.driver)
 
         primary_visible_ads = self.get_primary_ads()
@@ -58,7 +58,8 @@ class AdClicker:
             print(f"Selected ad: {selected_ad}")
 
             random_timeout = random.randint(3, 9)
-            smooth_scroll.scroll_to_ad_click(selected_ad, random_timeout)
+            smooth_scroll.scroll_to_ad_click(
+                selected_ad, random_timeout, log_file)
             print(
                 f"Waiting for {random_timeout} seconds before quitting the driver.")
             utils.ensure_browser_quit(self.driver)

@@ -127,3 +127,15 @@ def log_to_file(terminal_number, test_number, duration):
         file.write(
             f"Terminal {terminal_number}: Test #{test_number} completed in {duration:.2f}s.\n"
         )
+
+
+def create_ad_click_log():
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    log_file = f"log/ad_click_{timestamp}.log"
+
+    # Create log file only if it doesn't exist
+    if not os.path.exists(log_file):
+        with open(log_file, "w") as file:
+            file.write("0\n")  # Initialize count at 0
+
+    return log_file
