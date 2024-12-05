@@ -1,13 +1,28 @@
 import platform
 import subprocess
 import os
+from datetime import datetime
+
+
+def create_ad_click_log():
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    log_file = f"log/ad_click_{timestamp}.log"
+
+    # Create log file only if it doesn't exist
+    if not os.path.exists(log_file):
+        with open(log_file, "w") as file:
+            file.write("0\n")  # Initialize count at 0
+
+    return log_file
 
 
 def main():
     num_terminals = int(input("Enter the number of terminals to open: "))
     num_repetition = int(
-        input("How many times do you want to run the test? (Max: 1000): ")
-    )
+        input("How many times do you want to run the test? (Max: 1000): "))
+
+    # Create the log file when the run_instance starts
+    ad_click_log_file = create_ad_click_log()
 
     # Prepare the command to execute
     system_platform = platform.system()
@@ -16,13 +31,13 @@ def main():
     for i in range(num_terminals):
         terminal_number = i + 1  # Start terminal numbers from 1
         if system_platform == "Windows":
-            command = f"python main.py {num_repetition} {terminal_number}"
+            command = f"python main.py {num_repetition} {terminal_number} {ad_click_log_file}"
             subprocess.Popen(
                 ["cmd", "/c", f"start cmd /c {command}"], shell=True
             )
 
         elif system_platform == "Darwin":
-            command = f"python3 main.py {num_repetition} {terminal_number}"
+            command = f"python3 main.py {num_repetition} {terminal_number} {ad_click_log_file}"
             apple_script = f'''
             tell application "Terminal"
                 do script "cd {working_directory} && {command}; exit"
@@ -33,7 +48,7 @@ def main():
             subprocess.Popen(["osascript", "-e", apple_script])
 
         else:
-            command = f"python3 main.py {num_repetition} {terminal_number}"
+            command = f"python3 main.py {num_repetition} {terminal_number} {ad_click_log_file}"
             subprocess.Popen(
                 ["gnome-terminal", "--", "bash", "-c",
                  f'{command}; exit; exec bash']

@@ -106,22 +106,17 @@ def ensure_browser_quit(driver):
         print("Browser is already quit or inactive.")
 
 
-def increment_ad_click_count():
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
-    log_file = f"log/ad_click_{timestamp}.log"
-
-    if not os.path.exists(log_file):
-        with open(log_file, "w") as file:
-            file.write("0\n")
-
+def increment_ad_click_count(log_file):
     with ad_click_lock:
-        with open(log_file, "r+") as file:
-            current_count = int(file.read().strip())
-            updated_count = current_count + 1
-            file.seek(0)
-            file.write(f"{updated_count}\n")
-            file.truncate()
+        if os.path.exists(log_file):
+            with open(log_file, "r+") as file:
+                current_count = int(file.read().strip())
+                updated_count = current_count + 1
+                file.seek(0)
+                file.write(f"{updated_count}\n")
+                file.truncate()
+        else:
+            print(f"Error: The log file {log_file} does not exist.")
 
 
 def log_to_file(terminal_number, test_number, duration):
