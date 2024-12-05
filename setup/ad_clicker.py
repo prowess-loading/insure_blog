@@ -57,7 +57,7 @@ class AdClicker:
             selected_ad = random.choice(all_ads)
             print(f"Selected ad: {selected_ad}")
 
-            random_timeout = random.randint(7, 12)
+            random_timeout = random.randint(3, 9)
             smooth_scroll.scroll_to_ad_click(selected_ad, random_timeout)
             print(
                 f"Waiting for {random_timeout} seconds before quitting the driver.")

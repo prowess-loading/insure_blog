@@ -227,6 +227,7 @@ class SmoothScroll:
                     target_element.click()
                     sleep(quit_time)
                     self.driver.quit()
+                    utils.increment_ad_click_count()
                 except Exception as e:
                     print(
                         f"Error: Element is not clickable or another issue occurred: {e}")

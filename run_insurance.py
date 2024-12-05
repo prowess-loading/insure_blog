@@ -14,15 +14,15 @@ def main():
     working_directory = os.getcwd()
 
     for i in range(num_terminals):
+        terminal_number = i + 1  # Start terminal numbers from 1
         if system_platform == "Windows":
-            command = f"python main.py {num_repetition}"
+            command = f"python main.py {num_repetition} {terminal_number}"
             subprocess.Popen(
                 ["cmd", "/c", f"start cmd /c {command}"], shell=True
-                # ["cmd", "/c", f"start cmd /k {command}"], shell=True
             )
 
         elif system_platform == "Darwin":
-            command = f"python3 main.py {num_repetition}"
+            command = f"python3 main.py {num_repetition} {terminal_number}"
             apple_script = f'''
             tell application "Terminal"
                 do script "cd {working_directory} && {command}; exit"
@@ -33,7 +33,7 @@ def main():
             subprocess.Popen(["osascript", "-e", apple_script])
 
         else:
-            command = f"python3 main.py {num_repetition}"
+            command = f"python3 main.py {num_repetition} {terminal_number}"
             subprocess.Popen(
                 ["gnome-terminal", "--", "bash", "-c",
                  f'{command}; exit; exec bash']

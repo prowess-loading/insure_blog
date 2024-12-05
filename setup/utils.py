@@ -6,6 +6,11 @@ from selenium.common.exceptions import ElementNotInteractableException
 from data.agents_data import desk_agents
 from data.utms import main_page, utms
 from data.agents_data import ios_versions, apple_crios_versions, apple_fxios_versions, apple_edgios_versions
+import os
+from threading import Lock
+
+
+ad_click_lock = Lock()
 
 
 def target_url(add_utm):
@@ -99,3 +104,29 @@ def ensure_browser_quit(driver):
         driver.quit()
     except Exception as e:
         print("Browser is already quit or inactive.")
+
+
+def increment_ad_click_count():
+    log_file = "clicked_ad_count.log"
+
+    # Initialize the file if it doesn't exist
+    if not os.path.exists(log_file):
+        with open(log_file, "w") as file:
+            file.write("0\n")
+
+    with ad_click_lock:
+        with open(log_file, "r+") as file:
+            current_count = int(file.read().strip())
+            updated_count = current_count + 1
+            # Move to the beginning of the file
+            file.seek(0)
+            file.write(f"{updated_count}\n")
+            file.truncate()
+
+
+def log_to_file(terminal_number, test_number, duration):
+    log_file = "test_progress.log"
+    with open(log_file, "a") as file:
+        file.write(
+            f"Terminal {terminal_number}: Test #{test_number} completed in {duration:.2f}s.\n"
+        )
