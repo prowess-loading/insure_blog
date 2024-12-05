@@ -3,6 +3,7 @@ import random
 import time
 from selenium.webdriver.common.by import By
 from setup.smooth_scroll import SmoothScroll
+from setup import utils
 
 
 class InsuranceDetails:
@@ -30,6 +31,8 @@ class InsuranceDetails:
             navigator.scroll_to_single(selected_btn)
             time.sleep(3)
             navigator.scroll_to_end()
+            utils.ensure_browser_quit(self.driver)
 
         else:
             navigator.scroll_to_end()
+            utils.ensure_browser_quit(self.driver)

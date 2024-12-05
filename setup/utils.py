@@ -92,17 +92,10 @@ def should_click_ad(test_index, interval):
     return test_index == random.randint(interval_start, interval_end)
 
 
-def fill_input(driver, locator, value):
-
-    element = driver.find_element(By.CSS_SELECTOR, locator)
-    driver.execute_script(
-        "arguments[0].setAttribute('type', 'text');", element)
-
-    if element.is_displayed() and element.is_enabled():
-        element.clear()
-        element.send_keys(str(value))
-        sleep(0.5)
-        return
-    else:
-        raise ElementNotInteractableException(
-            "Element not interactable.")
+def ensure_browser_quit(driver):
+    try:
+        driver.current_url
+        print("Quitting again...")
+        driver.quit()
+    except Exception as e:
+        print("Browser is already quit or inactive.")

@@ -1,6 +1,7 @@
 import random
 from selenium.webdriver.common.by import By
 import time
+from setup import utils
 from setup.smooth_scroll import SmoothScroll
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
@@ -36,8 +37,10 @@ class AdClicker:
         for aside in asides:
             id_attribute = aside.get_attribute('id')
             class_attribute = aside.get_attribute('class')
+            height = self.driver.execute_script(
+                "return arguments[0].offsetHeight;", aside)
 
-            if id_attribute and id_attribute.startswith('block-') and 'widget_search' not in class_attribute:
+            if height > 0 and id_attribute and id_attribute.startswith('block-') and 'widget_search' not in class_attribute:
                 css_selector = f"aside#{id_attribute} > div"
                 side_ads.append(css_selector)
 
@@ -54,14 +57,11 @@ class AdClicker:
             selected_ad = random.choice(all_ads)
             print(f"Selected ad: {selected_ad}")
 
-            smooth_scroll.scroll_to_single(selected_ad)
-
-            random_timeout = random.randint(8, 15)
+            random_timeout = random.randint(7, 12)
+            smooth_scroll.scroll_to_ad_click(selected_ad, random_timeout)
             print(
                 f"Waiting for {random_timeout} seconds before quitting the driver.")
-
-            time.sleep(random_timeout)
-            self.driver.quit()
+            utils.ensure_browser_quit(self.driver)
 
         else:
             print("No visible elements found with height > 0.")
