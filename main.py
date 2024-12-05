@@ -36,10 +36,8 @@ def main():
                     driver.quit()
                     break
 
-                executor.process_run(driver, click_ad)
+                executor.process_run(driver, click_ad, ad_click_log_file)
                 break
-
-            executor.process_run(driver, click_ad, ad_click_log_file)
 
         finally:
             if driver:

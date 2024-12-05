@@ -31,7 +31,7 @@ class MainExecutor:
         self.ad_click_frequency = ad_click_frequency
 
     def get_num_tests(self):
-        if len(sys.argv) > 1:
+        if len(sys.argv) > 2:
             try:
                 num_tests = int(sys.argv[1])
                 if num_tests <= 0:
