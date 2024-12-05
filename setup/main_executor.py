@@ -70,7 +70,8 @@ class MainExecutor:
             region=self.region,
         )
 
-    def process_run(self, driver, click_ad, ad_log_file):
+    def process_run(self, driver, click_ad, ad_log_file, device_type):
+
         if self.visit_other_sites:
             other_visits = OtherVisits(driver)
             other_visits.process_urls_with_navigation()
@@ -87,11 +88,11 @@ class MainExecutor:
             random_target = random.choice(["homepage", "insurance_page"])
             if random_target == "homepage":
                 print("Clicking on ad in Homepage...")
-                ad_clicker.select_random_ad(ad_log_file)
+                ad_clicker.select_random_ad(ad_log_file, device_type)
             else:
                 homepage.open_insurance_page()
                 print("Clicking on ad in Insurance Page...")
-                ad_clicker.select_random_ad(ad_log_file)
+                ad_clicker.select_random_ad(ad_log_file, device_type)
         else:
             homepage.open_insurance_page()
             insurance_page.scroll_insurance_details_page()

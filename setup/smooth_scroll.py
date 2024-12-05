@@ -74,7 +74,7 @@ class SmoothScroll:
             "return document.body.scrollHeight")
 
         early_quit_threshold = random.uniform(
-            0.6, 0.8) * total_scroll_height if random.random() < 0.2 else None
+            0.3, 0.5) * total_scroll_height if random.random() < 0.3 else None
 
         while True:
             current_position = self.driver.execute_script(
@@ -225,9 +225,11 @@ class SmoothScroll:
                 try:
                     sleep(2)
                     target_element.click()
-                    sleep(quit_time)
-                    self.driver.quit()
                     utils.increment_ad_click_count(log_file)
+
+                    sleep(quit_time)
+                    self.driver.execute_script("window.history.back();")
+                    sleep(5)
                 except Exception as e:
                     print(
                         f"Error: Element is not clickable or another issue occurred: {e}")

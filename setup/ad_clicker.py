@@ -46,18 +46,19 @@ class AdClicker:
 
         return side_ads
 
-    def select_random_ad(self, log_file):
+    def select_random_ad(self, log_file, device_type):
         smooth_scroll = SmoothScroll(self.driver)
 
         primary_visible_ads = self.get_primary_ads()
         side_ads = self.get_side_ads()
-        all_ads = primary_visible_ads + side_ads
+
+        all_ads = primary_visible_ads if device_type == "mobile" else primary_visible_ads + side_ads
 
         if all_ads:
             selected_ad = random.choice(all_ads)
             print(f"Selected ad: {selected_ad}")
 
-            random_timeout = random.randint(3, 9)
+            random_timeout = random.randint(3, 8)
             smooth_scroll.scroll_to_ad_click(
                 selected_ad, random_timeout, log_file)
             print(

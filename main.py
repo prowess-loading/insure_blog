@@ -6,10 +6,14 @@ import random
 
 
 def main():
-    num_tests = int(sys.argv[1])
-    terminal_number = int(sys.argv[2])
-    ad_click_log_file = sys.argv[3]
-    terminal_log_file = sys.argv[4]
+
+    num_tests = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+    terminal_number = int(sys.argv[2]) if len(
+        sys.argv) > 2 else 1
+    ad_click_log_file = sys.argv[3] if len(
+        sys.argv) > 3 else "default_ad_click_log.log"
+    terminal_log_file = sys.argv[4] if len(
+        sys.argv) > 4 else "default_terminal_log.log"
 
     executor = MainExecutor()
     for i in range(1, num_tests + 1):
@@ -30,14 +34,15 @@ def main():
             # Start the process in a loop to monitor time
             while True:
                 elapsed_time = time.time() - start_time
+                print(f"Elapsed time: {elapsed_time:.2f}s")
+
                 if elapsed_time > 120:
                     print(
                         f"Test #{i}: Exceeded 120 seconds. Quitting driver...")
                     driver.quit()
                     break
-
-                executor.process_run(driver, click_ad, ad_click_log_file)
-                break
+                executor.process_run(
+                    driver, click_ad, ad_click_log_file, executor.device_type)
 
         finally:
             if driver:
