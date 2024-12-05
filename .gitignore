@@ -3,5 +3,4 @@
 /setup/__pycache__
 /data/__pycache__
 .DS_Store
-test_progress.log
-clicked_ad_count.log
+/log/*
