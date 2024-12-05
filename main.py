@@ -26,6 +26,19 @@ def main():
 
         try:
             driver = executor.setup_driver()
+
+            # Start the process in a loop to monitor time
+            while True:
+                elapsed_time = time.time() - start_time
+                if elapsed_time > 120:
+                    print(
+                        f"Test #{i}: Exceeded 120 seconds. Quitting driver...")
+                    driver.quit()
+                    break
+
+                executor.process_run(driver, click_ad)
+                break
+
             executor.process_run(driver, click_ad, ad_click_log_file)
 
         finally:
