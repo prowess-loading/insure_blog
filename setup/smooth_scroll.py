@@ -226,10 +226,8 @@ class SmoothScroll:
                     sleep(2)
                     target_element.click()
                     utils.increment_ad_click_count(log_file)
-
                     sleep(quit_time)
-                    self.driver.execute_script("window.history.back();")
-                    sleep(5)
+                    self.driver.quit()
                 except Exception as e:
                     print(
                         f"Error: Element is not clickable or another issue occurred: {e}")
