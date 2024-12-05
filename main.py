@@ -6,10 +6,10 @@ import random
 
 
 def main():
-    # Retrieve arguments
     num_tests = int(sys.argv[1])
     terminal_number = int(sys.argv[2])
     ad_click_log_file = sys.argv[3]
+    terminal_log_file = sys.argv[4]
 
     executor = MainExecutor()
     for i in range(1, num_tests + 1):
@@ -35,7 +35,7 @@ def main():
             duration = time.time() - start_time
             print(
                 f"Terminal {terminal_number}: Test #{i} completed in {duration:.2f}s.")
-            utils.log_to_file(terminal_number, i, duration)
+            utils.log_to_file(terminal_number, i, duration, terminal_log_file)
 
 
 if __name__ == "__main__":

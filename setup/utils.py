@@ -119,23 +119,18 @@ def increment_ad_click_count(log_file):
             print(f"Error: The log file {log_file} does not exist.")
 
 
-def log_to_file(terminal_number, test_number, duration):
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    log_file = f"log/terminal_run_log_{timestamp}.log"
-
+def log_to_file(terminal_number, test_number, duration, log_file):
     with open(log_file, "a") as file:
         file.write(
-            f"Terminal {terminal_number}: Test #{test_number} completed in {duration:.2f}s.\n"
-        )
+            f"Terminal {terminal_number}: Test #{test_number} completed in {duration:.2f}s.\n")
 
 
 def create_ad_click_log():
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     log_file = f"log/ad_click_{timestamp}.log"
 
-    # Create log file only if it doesn't exist
     if not os.path.exists(log_file):
         with open(log_file, "w") as file:
-            file.write("0\n")  # Initialize count at 0
+            file.write("0\n")
 
     return log_file
