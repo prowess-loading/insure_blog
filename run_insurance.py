@@ -24,27 +24,28 @@ def main():
 
     for i in range(num_terminals):
         terminal_number = i + 1
-
         if system_platform == "Windows":
             command = f"python main.py {num_repetition} {terminal_number} {ad_click_log_file} {terminal_log_file}"
+            subprocess.Popen(
+                ["cmd", "/c", f"start cmd /c {command}"], shell=True
+            )
+
+        elif system_platform == "Darwin":
+            command = f"python3 main.py {num_repetition} {terminal_number} {ad_click_log_file} {terminal_log_file}"
+            apple_script = f'''
+            tell application "Terminal"
+                do script "cd {working_directory} && {command}; exit"
+                delay 0.5 -- Ensure the command starts before we proceed
+                tell application "System Events" to keystroke "w" using command down
+            end tell
+            '''
+            subprocess.Popen(["osascript", "-e", apple_script])
+
         else:
             command = f"python3 main.py {num_repetition} {terminal_number} {ad_click_log_file} {terminal_log_file}"
-
-        try:
-            if system_platform == "Windows":
-                subprocess.Popen(["cmd", "/c", command], shell=True)
-
-            elif system_platform == "Darwin":
-                subprocess.Popen(["osascript", "-e", f"""
-                tell application "Terminal"
-                    do script "cd {working_directory} && {command}; exit"
-                end tell
-                """])
-
-            else:
-                subprocess.Popen(["bash", "-c", f"{command}; exit"])
-        except Exception as e:
-            print(f"Error launching terminal #{terminal_number}: {e}")
+            subprocess.Popen(
+                ["gnome-terminal", "--", "bash", "-c",
+                 f'{command}; exit; exec bash'])
 
 
 if __name__ == "__main__":
