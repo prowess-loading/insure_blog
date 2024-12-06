@@ -18,7 +18,7 @@ class MainExecutor:
             add_utm=False,
             visit_other_sites=False,
             enable_ad_click=True,
-            ad_click_frequency=1
+            ad_click_frequency=2
     ):
         self.device_type = device_type
         self.proxy_active = proxy_active
@@ -29,36 +29,6 @@ class MainExecutor:
         self.visit_other_sites = visit_other_sites
         self.enable_ad_click = enable_ad_click
         self.ad_click_frequency = ad_click_frequency
-
-    def get_num_tests(self):
-        if len(sys.argv) > 2:
-            try:
-                num_tests = int(sys.argv[1])
-                if num_tests <= 0:
-                    print("The number of tests should be greater than 0.")
-                    return None
-                if num_tests > 1000:
-                    print("The maximum number of tests allowed is 1000.")
-                    return None
-                return num_tests
-            except ValueError:
-                print("Please provide a valid number for <num_tests>.")
-                return None
-        else:
-            try:
-                num_tests = int(
-                    input("How many times do you want to run the test? (Max: 1000): ")
-                )
-                if num_tests <= 0:
-                    print("The number of tests should be greater than 0.")
-                    return None
-                if num_tests > 1000:
-                    print("The maximum number of tests allowed is 1000.")
-                    return None
-                return num_tests
-            except ValueError:
-                print("Please enter a valid number.")
-                return None
 
     def setup_driver(self):
         browser_setup = BrowserSetup()
@@ -85,13 +55,11 @@ class MainExecutor:
         ad_clicker = AdClicker(driver)
 
         if click_ad:
-            random_target = random.choice(["homepage", "insurance_page"])
-            if random_target == "homepage":
-                print("Clicking on ad in Homepage...")
+            ad_target = random.choice(["homepage", "insurance_page"])
+            if ad_target == "homepage":
                 ad_clicker.select_random_ad(ad_log_file, device_type)
             else:
                 homepage.open_insurance_page()
-                print("Clicking on ad in Insurance Page...")
                 ad_clicker.select_random_ad(ad_log_file, device_type)
         else:
             homepage.open_insurance_page()

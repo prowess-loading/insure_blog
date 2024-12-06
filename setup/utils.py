@@ -1,3 +1,4 @@
+from setup.device_manager import get_device
 import random
 from time import sleep
 from selenium.webdriver.common.by import By
@@ -98,9 +99,11 @@ def should_click_ad(test_index, interval):
 
 
 def ensure_browser_quit(driver):
+    if not driver:
+        print("No driver instance found. Skipping quit operation.")
+        return
     try:
         driver.current_url
-        print("Quitting again...")
         driver.quit()
     except Exception as e:
         print("Browser is already quit or inactive.")
@@ -110,7 +113,8 @@ def increment_ad_click_count(log_file):
     with ad_click_lock:
         if os.path.exists(log_file):
             with open(log_file, "r+") as file:
-                current_count = int(file.read().strip())
+                content = file.read().strip()
+                current_count = int(content) if content else 0
                 updated_count = current_count + 1
                 file.seek(0)
                 file.write(f"{updated_count}\n")

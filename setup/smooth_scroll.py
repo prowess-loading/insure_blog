@@ -1,5 +1,5 @@
 import random
-from time import sleep
+import time
 from setup import utils
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
@@ -10,6 +10,43 @@ class SmoothScroll:
         self.driver = driver
         self.speed = speed
 
+    def _scroll(self, scroll_amount, total_scroll_height):
+        current_position = self.driver.execute_script(
+            "return window.pageYOffset;")
+        next_position = min(
+            max(0, current_position + scroll_amount), total_scroll_height)
+        scroll_step = int(scroll_amount / abs(scroll_amount) * self.speed)
+
+        for position in range(int(current_position), int(next_position), int(scroll_step)):
+            self.driver.execute_script(
+                f"window.scrollTo(0, {min(position, total_scroll_height)});")
+            time.sleep(0.03 + random.uniform(-0.03, 0.03))
+
+        return self.driver.execute_script("return window.pageYOffset;")
+
+    def _toggle_scroll_direction(self, scrolling_up, toggle_up_once):
+        if not scrolling_up and random.random() < 0.1 and not toggle_up_once:
+            return True, True
+        elif scrolling_up:
+            return False, toggle_up_once
+        return scrolling_up, toggle_up_once
+
+    def _random_pause(self):
+        if random.random() < 0.015:
+            time.sleep(1 + random.uniform(0, 1))
+        else:
+            time.sleep(random.uniform(0.3, 0.6))
+
+    def wait_for_element(driver, timeout=10):
+        start_time = time.time()
+        while True:
+            elapsed_time = time.time() - start_time
+            if elapsed_time > timeout:
+                print(
+                    f"Timeout reached: Could not find the target element within {timeout} seconds.")
+                driver.quit()
+                return False
+
     def scroll_to_single(self, target_selector, by=By.CSS_SELECTOR):
         try:
             target_element = self.driver.find_element(by, target_selector)
@@ -17,19 +54,26 @@ class SmoothScroll:
             print(f"Element with selector '{target_selector}' not found.")
             return
 
-        current_position = self.driver.execute_script(
-            "return window.pageYOffset;")
         scrolling_up = False
         toggle_up_once = False
+        start_time = time.time()
+        timeout = 12
 
         while True:
+            elapsed_time = time.time() - start_time
+            if elapsed_time > timeout:
+                print(
+                    f"Timeout reached: Could not find the target element within {timeout} seconds.")
+                self.driver.quit()
+                break
+
             target_in_view = self.driver.execute_script(
                 "var rect = arguments[0].getBoundingClientRect();"
                 "return (rect.top >= 0 && rect.bottom <= window.innerHeight);",
                 target_element,
             )
             if target_in_view:
-                sleep(3)
+                time.sleep(3)
                 try:
                     target_element.click()
                 except Exception as e:
@@ -37,33 +81,15 @@ class SmoothScroll:
                         f"Error: Element is not clickable or another issue occurred: {e}")
                 break
 
-            # Adjust scroll amount based on direction
-            scroll_amount = (
-                -random.randint(80, 150) if scrolling_up else random.randint(300, 700)
-            )
-            next_position = int(current_position) + scroll_amount
+            scroll_amount = - \
+                random.randint(
+                    80, 150) if scrolling_up else random.randint(300, 700)
+            self._scroll(scroll_amount, self.driver.execute_script(
+                "return document.body.scrollHeight"))
 
-            # Smooth scroll in small steps
-            scroll_step = int(scroll_amount / abs(scroll_amount) * self.speed)
-            for position in range(int(current_position), next_position, scroll_step):
-                self.driver.execute_script(
-                    f"window.scrollTo(0, {max(0, position)});"
-                )
-                sleep(0.02)
-
-            current_position = next_position
-
-            # Toggle scrolling direction occasionally
-            if not scrolling_up and random.random() < 0.1 and not toggle_up_once:
-                scrolling_up = True
-                toggle_up_once = True
-            elif scrolling_up:
-                scrolling_up = False
-
-            if random.random() < 0.015:
-                sleep(1)
-            else:
-                sleep(random.uniform(0.3, 0.6))
+            scrolling_up, toggle_up_once = self._toggle_scroll_direction(
+                scrolling_up, toggle_up_once)
+            self._random_pause()
 
     def scroll_to_end(self):
         max_attempts = 4
@@ -74,57 +100,45 @@ class SmoothScroll:
             "return document.body.scrollHeight")
 
         early_quit_threshold = random.uniform(
-            0.3, 0.5) * total_scroll_height if random.random() < 0.3 else None
+            0.3, 0.5) * total_scroll_height if random.random() < 0.4 else None
+
+        start_time = time.time()
+        timeout = 15
 
         while True:
+            elapsed_time = time.time() - start_time
+            if elapsed_time > timeout:
+                print(
+                    f"Timeout reached: Could not reach bottom within {timeout} seconds.")
+                self.driver.quit()
+                break
+
             current_position = self.driver.execute_script(
                 "return window.pageYOffset")
             total_scroll_height = self.driver.execute_script(
                 "return document.body.scrollHeight")
 
-            scroll_amount = (
-                -random.randint(80, 150) if scrolling_up else random.randint(300, 700)
-            )
-            next_position = min(
-                max(0, current_position + scroll_amount), total_scroll_height)
-
-            # Perform smooth scrolling
-            scroll_step = int(scroll_amount / abs(scroll_amount) * self.speed)
-
-            for position in range(int(current_position), int(next_position), int(scroll_step)):
-
-                self.driver.execute_script(
-                    f"window.scrollTo(0, {min(position, total_scroll_height)});"
-                )
-                sleep(0.03 + random.uniform(-0.03, 0.03))
-
-            new_position = self.driver.execute_script(
-                "return window.pageYOffset")
+            scroll_amount = - \
+                random.randint(
+                    80, 150) if scrolling_up else random.randint(400, 800)
+            new_position = self._scroll(scroll_amount, total_scroll_height)
 
             if early_quit_threshold and new_position >= early_quit_threshold:
                 print(f"Early quitting...")
                 self.driver.quit()
                 break
 
-            # Check if the position has stopped changing
             if new_position == current_position:
                 attempts += 1
                 if attempts >= max_attempts:
                     print("Scrolling stagnated. Exiting...")
                     break
             else:
-                attempts = 0  # Reset attempts if movement detected
+                attempts = 0
 
-            if not scrolling_up and random.random() < 0.1 and not toggle_up_once:
-                scrolling_up = True
-                toggle_up_once = True
-            elif scrolling_up:
-                scrolling_up = False
-
-            if random.random() < 0.015:
-                sleep(1 + random.uniform(0, 1))
-            else:
-                sleep(random.uniform(0.3, 0.6))
+            scrolling_up, toggle_up_once = self._toggle_scroll_direction(
+                scrolling_up, toggle_up_once)
+            self._random_pause()
 
             if new_position >= total_scroll_height - 1:
                 print("Reached the end of the page.")
@@ -135,12 +149,9 @@ class SmoothScroll:
         attempts = 0
         scrolling_up = False
         toggle_up_once = False
-
-        # Fetch total scroll height
         total_scroll_height = self.driver.execute_script(
             "return document.body.scrollHeight")
 
-        # Early quit threshold
         early_quit_threshold = random.uniform(
             0.6, 0.8) * total_scroll_height if random.random() < 0.6 else None
 
@@ -150,31 +161,16 @@ class SmoothScroll:
             total_scroll_height = self.driver.execute_script(
                 "return document.body.scrollHeight")
 
-            # Randomize scrolling amount and direction
-            scroll_amount = (
-                -random.randint(80, 250) if scrolling_up else random.randint(200, 500)
-            )
-            next_position = min(
-                max(0, current_position + scroll_amount), total_scroll_height)
+            scroll_amount = - \
+                random.randint(
+                    80, 250) if scrolling_up else random.randint(200, 500)
+            new_position = self._scroll(scroll_amount, total_scroll_height)
 
-            # Perform smooth scrolling
-            scroll_step = int(scroll_amount / abs(scroll_amount) * self.speed)
-
-            for position in range(int(current_position), int(next_position), int(scroll_step)):
-                self.driver.execute_script(
-                    f"window.scrollTo(0, {min(position, total_scroll_height)});")
-                sleep(0.03 + random.uniform(-0.03, 0.03))
-
-            new_position = self.driver.execute_script(
-                "return window.pageYOffset")
-
-            # Handle early quit logic
             if early_quit_threshold and new_position >= early_quit_threshold:
                 print(f"Early quitting... Navigating to {next_url}")
                 utils.open_url_with_retry(self.driver, next_url)
                 return
 
-            # Detect stagnation in scrolling
             if new_position == current_position:
                 attempts += 1
                 if attempts >= max_attempts:
@@ -182,22 +178,12 @@ class SmoothScroll:
                     utils.open_url_with_retry(self.driver, next_url)
                     return
             else:
-                attempts = 0  # Reset attempts if movement detected
+                attempts = 0
 
-            # Toggle direction for a single upward scroll
-            if not scrolling_up and random.random() < 0.1 and not toggle_up_once:
-                scrolling_up = True
-                toggle_up_once = True
-            elif scrolling_up:
-                scrolling_up = False
+            scrolling_up, toggle_up_once = self._toggle_scroll_direction(
+                scrolling_up, toggle_up_once)
+            self._random_pause()
 
-            # Random pauses for natural scrolling effect
-            if random.random() < 0.015:
-                sleep(1 + random.uniform(0, 1))
-            else:
-                sleep(random.uniform(0.3, 0.6))
-
-            # Check if we have reached the end
             if new_position >= total_scroll_height - 1:
                 print("Reached the end of the page. Navigating to the next URL...")
                 utils.open_url_with_retry(self.driver, next_url)
@@ -210,12 +196,19 @@ class SmoothScroll:
             print(f"Element with selector '{target_selector}' not found.")
             return
 
-        current_position = self.driver.execute_script(
-            "return window.pageYOffset;")
         scrolling_up = False
         toggle_up_once = False
+        start_time = time.time()
+        timeout = 12
 
         while True:
+            elapsed_time = time.time() - start_time
+            if elapsed_time > timeout:
+                print(
+                    f"Timeout reached: Could not find the target ad within {timeout} seconds.")
+                self.driver.quit()
+                break
+
             target_in_view = self.driver.execute_script(
                 "var rect = arguments[0].getBoundingClientRect();"
                 "return (rect.top >= 0 && rect.bottom <= window.innerHeight);",
@@ -223,40 +216,25 @@ class SmoothScroll:
             )
             if target_in_view:
                 try:
-                    sleep(2)
+                    time.sleep(1)
                     target_element.click()
                     utils.increment_ad_click_count(log_file)
-                    sleep(quit_time)
-                    self.driver.quit()
-                except Exception as e:
+                except (Exception) as e:
                     print(
                         f"Error: Element is not clickable or another issue occurred: {e}")
+                finally:
+                    print(
+                        f"Waiting for {quit_time} seconds before quitting the driver.")
+                    time.sleep(quit_time)
+                    self.driver.quit()
                 break
 
-            # Adjust scroll amount based on direction
-            scroll_amount = (
-                -random.randint(80, 150) if scrolling_up else random.randint(200, 500)
-            )
-            next_position = int(current_position) + scroll_amount
+            scroll_amount = - \
+                random.randint(
+                    80, 150) if scrolling_up else random.randint(200, 500)
+            self._scroll(scroll_amount, self.driver.execute_script(
+                "return document.body.scrollHeight"))
 
-            # Smooth scroll in small steps
-            scroll_step = int(scroll_amount / abs(scroll_amount) * self.speed)
-            for position in range(int(current_position), next_position, scroll_step):
-                self.driver.execute_script(
-                    f"window.scrollTo(0, {max(0, position)});"
-                )
-                sleep(0.02)
-
-            current_position = next_position
-
-            # Toggle scrolling direction occasionally
-            if not scrolling_up and random.random() < 0.1 and not toggle_up_once:
-                scrolling_up = True
-                toggle_up_once = True
-            elif scrolling_up:
-                scrolling_up = False
-
-            if random.random() < 0.015:
-                sleep(1)
-            else:
-                sleep(random.uniform(0.3, 0.6))
+            scrolling_up, toggle_up_once = self._toggle_scroll_direction(
+                scrolling_up, toggle_up_once)
+            self._random_pause()

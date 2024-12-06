@@ -50,21 +50,23 @@ class AdClicker:
         smooth_scroll = SmoothScroll(self.driver)
 
         primary_visible_ads = self.get_primary_ads()
-        side_ads = self.get_side_ads()
+        all_ads = primary_visible_ads
 
-        all_ads = primary_visible_ads if device_type == "mobile" else primary_visible_ads + side_ads
+        if device_type != "mobile":
+            side_ads = self.get_side_ads()
+            all_ads += side_ads
 
-        if all_ads:
-            selected_ad = random.choice(all_ads)
-            print(f"Selected ad: {selected_ad}")
-
-            random_timeout = random.randint(3, 8)
-            smooth_scroll.scroll_to_ad_click(
-                selected_ad, random_timeout, log_file)
-            print(
-                f"Waiting for {random_timeout} seconds before quitting the driver.")
-            utils.ensure_browser_quit(self.driver)
-
-        else:
+        if not all_ads:
             print("No visible elements found with height > 0.")
             return None
+
+        selected_ad = random.choice(all_ads)
+        print(f"Selected ad: {selected_ad}")
+
+        random_timeout = random.randint(1, 5)
+
+        try:
+            smooth_scroll.scroll_to_ad_click(
+                selected_ad, random_timeout, log_file)
+        except Exception as e:
+            print(f"Error occurred while scrolling to ad and clicking: {e}")

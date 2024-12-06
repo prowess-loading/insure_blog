@@ -22,40 +22,27 @@ class BrowserSetup:
 
         proxy = proxies.generate_proxy_with_region(region)
 
-        # Browser Selection
-        if browser_name == "random":
-            browser_name = random.choices(
-                SUPPORTED_BROWSERS, weights=[70, 20, 10], k=1
-            )[0]
-        print(f"Browser name: {browser_name}")
+        browser_name = browser_name if browser_name != "random" else random.choices(
+            SUPPORTED_BROWSERS, weights=[70, 20, 10], k=1)[0]
 
         if device_type == "desk":
             user_agent = utils.get_desk_user_agent()
             options = get_browser_options(
                 browser_name, user_agent, device_type)
-
             driver = initialize_driver(
                 device_type, browser_name, options, proxy_active, proxy)
             return driver
 
         else:
             device = get_device(self.devices, device_name)
-
-        # Dimension Adjustment
-        adjusted_width, adjusted_height = utils.adjust_dimensions(
-            device, self.browser_deltas, browser_name)
-
-        # Initialize Browser
-        user_agent = utils.get_mobile_user_agent(
-            device, browser_name)
-
-        options = get_browser_options(
-            browser_name, user_agent, device_type, device)
-
-        driver = initialize_driver(
-            device_type, browser_name, options, proxy_active, proxy, adjusted_width, adjusted_height)
-
-        utils.set_window_size(
-            driver, device, self.browser_deltas, browser_name)
-
-        return driver
+            user_agent = utils.get_mobile_user_agent(
+                device, browser_name)
+            adjusted_width, adjusted_height = utils.adjust_dimensions(
+                device, self.browser_deltas, browser_name)
+            options = get_browser_options(
+                browser_name, user_agent, device_type, device)
+            driver = initialize_driver(
+                device_type, browser_name, options, proxy_active, proxy, adjusted_width, adjusted_height)
+            utils.set_window_size(
+                driver, device, self.browser_deltas, browser_name)
+            return driver

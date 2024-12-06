@@ -11,11 +11,12 @@ def main():
     terminal_number = int(sys.argv[2]) if len(
         sys.argv) > 2 else 1
     ad_click_log_file = sys.argv[3] if len(
-        sys.argv) > 3 else "default_ad_click_log.log"
+        sys.argv) > 3 else "log/default_ad_click_log.log"
     terminal_log_file = sys.argv[4] if len(
-        sys.argv) > 4 else "default_terminal_log.log"
+        sys.argv) > 4 else "log/default_terminal_log.log"
 
     executor = MainExecutor()
+
     for i in range(1, num_tests + 1):
         start_time = time.time()
         print(f"\nTerminal {terminal_number}: Running test #{i}...\n")
@@ -34,8 +35,7 @@ def main():
                 driver, click_ad, ad_click_log_file, executor.device_type)
 
         finally:
-            if driver:
-                driver.quit()
+            utils.ensure_browser_quit(driver)
 
             duration = time.time() - start_time
             print(
