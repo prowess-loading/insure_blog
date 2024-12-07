@@ -56,17 +56,8 @@ class SmoothScroll:
 
         scrolling_up = False
         toggle_up_once = False
-        start_time = time.time()
-        timeout = 20
 
         while True:
-            elapsed_time = time.time() - start_time
-            if elapsed_time > timeout:
-                print(
-                    f"Timeout reached: Could not find the target element within {timeout} seconds.")
-                self.driver.quit()
-                break
-
             target_in_view = self.driver.execute_script(
                 "var rect = arguments[0].getBoundingClientRect();"
                 "return (rect.top >= 0 && rect.bottom <= window.innerHeight);",
@@ -102,17 +93,7 @@ class SmoothScroll:
         early_quit_threshold = random.uniform(
             0.3, 0.5) * total_scroll_height if random.random() < 0.4 else None
 
-        start_time = time.time()
-        timeout = 20
-
         while True:
-            elapsed_time = time.time() - start_time
-            if elapsed_time > timeout:
-                print(
-                    f"Timeout reached: Could not reach bottom within {timeout} seconds.")
-                self.driver.quit()
-                break
-
             current_position = self.driver.execute_script(
                 "return window.pageYOffset")
             total_scroll_height = self.driver.execute_script(
@@ -199,7 +180,7 @@ class SmoothScroll:
         scrolling_up = False
         toggle_up_once = False
         start_time = time.time()
-        timeout = 20
+        timeout = 15
 
         while True:
             elapsed_time = time.time() - start_time
