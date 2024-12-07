@@ -57,7 +57,7 @@ class SmoothScroll:
         scrolling_up = False
         toggle_up_once = False
         start_time = time.time()
-        timeout = 12
+        timeout = 20
 
         while True:
             elapsed_time = time.time() - start_time
@@ -103,7 +103,7 @@ class SmoothScroll:
             0.3, 0.5) * total_scroll_height if random.random() < 0.4 else None
 
         start_time = time.time()
-        timeout = 15
+        timeout = 20
 
         while True:
             elapsed_time = time.time() - start_time
@@ -199,7 +199,7 @@ class SmoothScroll:
         scrolling_up = False
         toggle_up_once = False
         start_time = time.time()
-        timeout = 12
+        timeout = 20
 
         while True:
             elapsed_time = time.time() - start_time
@@ -216,17 +216,14 @@ class SmoothScroll:
             )
             if target_in_view:
                 try:
-                    time.sleep(1)
+                    time.sleep(2)
                     target_element.click()
                     utils.increment_ad_click_count(log_file)
+                    time.sleep(quit_time)
+                    self.driver.quit()
                 except (Exception) as e:
                     print(
                         f"Error: Element is not clickable or another issue occurred: {e}")
-                finally:
-                    print(
-                        f"Waiting for {quit_time} seconds before quitting the driver.")
-                    time.sleep(quit_time)
-                    self.driver.quit()
                 break
 
             scroll_amount = - \

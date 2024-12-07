@@ -63,8 +63,7 @@ class AdClicker:
         selected_ad = random.choice(all_ads)
         print(f"Selected ad: {selected_ad}")
 
-        random_timeout = random.randint(1, 5)
-
+        random_timeout = random.randint(2, 5)
         try:
             smooth_scroll.scroll_to_ad_click(
                 selected_ad, random_timeout, log_file)
