@@ -24,22 +24,34 @@ def target_url(add_utm):
         return random.choice(main_page)
 
 
-def open_url_with_retry(driver, url, max_retries=3, retry_delay=5):
+def open_url_with_retry(driver, url, max_retries=3, retry_delay=3):
     for attempt in range(max_retries):
         try:
             driver.get(url)
 
-            # Check if the page contains "502 Bad Gateway"
             if "502 Bad Gateway" in driver.page_source:
                 print(
                     f"502 error detected. Retrying... ({attempt + 1}/{max_retries})")
-                sleep(retry_delay)  # Wait before retrying
+                sleep(retry_delay)
                 continue
+
+            if driver.title == "":
+                print(
+                    f"Page title is empty, retrying... ({attempt + 1}/{max_retries})")
+                sleep(retry_delay)
+                continue
+
             break
+
         except TimeoutException:
             print(
                 f"Timeout occurred. Retrying... ({attempt + 1}/{max_retries})")
             sleep(retry_delay)
+        except Exception as e:
+            print(
+                f"An error occurred: {e}. Retrying... ({attempt + 1}/{max_retries})")
+            sleep(retry_delay)
+
     else:
         print("Failed to load the page after multiple attempts.")
 
