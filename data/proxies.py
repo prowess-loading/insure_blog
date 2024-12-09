@@ -8,7 +8,7 @@ proxy_config = {
 
     "region": {
         "us": "us",
-        "na": ["us", "ca", "mx", "br"],
+        "na": ["us", "ca"],
         "au": ["au", "nz"],
         "as": ["jp", "sg", "hk", "kr"],
         "eu": [
