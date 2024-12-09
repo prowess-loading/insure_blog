@@ -219,7 +219,7 @@ class SmoothScroll:
                         utils.increment_ad_click_count(log_file)
                         print("Ad count increased.")
                     else:
-                        print("Could not click properly")
+                        print("Could not click properly.")
                     self.driver.quit()
 
                 except TimeoutException:
@@ -253,7 +253,7 @@ class SmoothScroll:
             # Scroll downward
             scroll_amount = - \
                 random.randint(
-                    80, 150) if scrolling_up else random.randint(400, 800)
+                    80, 150) if scrolling_up else random.randint(500, 900)
             new_position = self._scroll(scroll_amount, total_scroll_height)
 
             if new_position == current_position:
@@ -288,14 +288,10 @@ class SmoothScroll:
 
             if target_in_view:
                 try:
-                    WebDriverWait(self.driver, 10).until(
-                        EC.element_to_be_clickable((by, target_selector))
-                    )
-
                     height = self.driver.execute_script(
                         "return arguments[0].offsetHeight;", target_element)
-                    print(f"Height in smooth_scroll: {height}")
                     if height > 10:
+                        self.driver.set_page_load_timeout(15)
                         target_element.click()
                     else:
                         self.scroll_to_end()
@@ -309,13 +305,12 @@ class SmoothScroll:
                         utils.increment_ad_click_count(log_file)
                         print("Ad count increased.")
                     else:
-                        print("Click did not lead to redirection. Skipping count.")
-
+                        print("Could not click properly.")
                     self.driver.quit()
 
                 except TimeoutException:
                     print(
-                        "Element did not become clickable within 10 seconds. Exiting.")
+                        "Element did not become clickable within 15 seconds. Exiting.")
                     self.driver.quit()
                 except Exception as e:
                     print(f"Unexpected error during click: {e}")
