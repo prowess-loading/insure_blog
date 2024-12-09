@@ -1,11 +1,7 @@
 import random
 from selenium.webdriver.common.by import By
-import time
-from setup import utils
 from setup.smooth_scroll import SmoothScroll
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
 
 
 class AdClicker:
@@ -40,29 +36,39 @@ class AdClicker:
             height = self.driver.execute_script(
                 "return arguments[0].offsetHeight;", aside)
 
-            if height > 0 and id_attribute and id_attribute.startswith('block-') and 'widget_search' not in class_attribute:
+            if height > 10 and id_attribute.startswith('block-') and 'widget_search' not in class_attribute:
                 css_selector = f"aside#{id_attribute} > div"
                 side_ads.append(css_selector)
 
         return side_ads
 
-    def select_random_ad(self, log_file):
+    def select_random_ad(self, log_file, ad_target):
         smooth_scroll = SmoothScroll(self.driver)
+
+        WebDriverWait(self.driver, 30).until(
+            lambda d: d.execute_script(
+                "return document.readyState") == "complete"
+        )
 
         primary_visible_ads = self.get_primary_ads()
         side_ads = self.get_side_ads()
         all_ads = primary_visible_ads + side_ads
 
         if not all_ads:
-            print("No visible elements found with height > 0.")
+            print("No visible ad found")
             return None
 
         selected_ad = random.choice(all_ads)
         print(f"Selected ad: {selected_ad}")
-
         random_timeout = random.randint(2, 5)
+
         try:
-            smooth_scroll.scroll_to_ad_click(
-                selected_ad, random_timeout, log_file)
+            if ad_target == "homepage":
+                smooth_scroll.scroll_bottom_up_ad_click(
+                    selected_ad, random_timeout, log_file)
+            else:
+                smooth_scroll.scroll_to_ad_click(
+                    selected_ad, random_timeout, log_file)
+
         except Exception as e:
             print(f"Error occurred while scrolling to ad and clicking: {e}")

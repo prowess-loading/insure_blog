@@ -1,8 +1,11 @@
 import random
 import time
 from setup import utils
+from data.utms import domain
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 
 class SmoothScroll:
@@ -174,13 +177,13 @@ class SmoothScroll:
         try:
             target_element = self.driver.find_element(by, target_selector)
         except NoSuchElementException:
-            print(f"Element with selector '{target_selector}' not found.")
+            print(f"Element not found.")
             return
 
         scrolling_up = False
         toggle_up_once = False
         start_time = time.time()
-        timeout = 15
+        timeout = 20
 
         while True:
             elapsed_time = time.time() - start_time
@@ -197,17 +200,33 @@ class SmoothScroll:
             )
             if target_in_view:
                 try:
-                    time.sleep(2)
-                    target_element.click()
-                    print("ad Clicked")
-                    switch_to_new_tab(self.driver)
-                    print(f"Will sleep for {quit_time} seconds")
+                    WebDriverWait(self.driver, 10).until(
+                        EC.element_to_be_clickable((by, target_selector))
+                    )
+                    height = self.driver.execute_script(
+                        "return arguments[0].offsetHeight;", target_element)
+                    if height > 10:
+                        target_element.click()
+                    else:
+                        self.scroll_to_end()
+                        break
+
+                    print(f"Will sleep for {quit_time} seconds.")
                     time.sleep(quit_time)
-                    utils.increment_ad_click_count(log_file)
+
+                    current_url = self.driver.current_url
+                    if domain not in current_url:
+                        utils.increment_ad_click_count(log_file)
+                        print("Ad count increased.")
+                    else:
+                        print("Could not click properly")
                     self.driver.quit()
-                except (Exception) as e:
-                    print(
-                        f"Error: Element is not clickable or another issue occurred: {e}")
+
+                except TimeoutException:
+                    self.driver.quit()
+                except Exception as e:
+                    print(f"An unexpected error occurred: {e}")
+                    self.driver.quit()
                 break
 
             scroll_amount = - \
@@ -220,6 +239,93 @@ class SmoothScroll:
                 scrolling_up, toggle_up_once)
             self._random_pause()
 
+    def scroll_bottom_up_ad_click(self, target_selector, quit_time, log_file, by=By.CSS_SELECTOR):
+        scrolling_up = False
+        toggle_once = False
 
-def switch_to_new_tab(driver):
-    driver.switch_to.window(driver.window_handles[-1])
+        # Phase 1: Scroll to the Bottom
+        while True:
+            current_position = self.driver.execute_script(
+                "return window.pageYOffset")
+            total_scroll_height = self.driver.execute_script(
+                "return document.body.scrollHeight")
+
+            # Scroll downward
+            scroll_amount = - \
+                random.randint(
+                    80, 150) if scrolling_up else random.randint(400, 800)
+            new_position = self._scroll(scroll_amount, total_scroll_height)
+
+            if new_position == current_position:
+                break
+
+            scrolling_up, toggle_once = self._toggle_scroll_direction(
+                scrolling_up, toggle_once)
+            self._random_pause()
+
+            if new_position >= total_scroll_height - 1:
+                break
+
+        # Phase 2: Scroll Upwards
+        scrolling_up = True
+        start_time = time.time()
+        timeout = 20
+
+        while True:
+            elapsed_time = time.time() - start_time
+            if elapsed_time > timeout:
+                print(
+                    f"Timeout reached: Could not find the target ad within {timeout} seconds.")
+                self.driver.quit()
+                break
+
+            target_element = self.driver.find_element(by, target_selector)
+            target_in_view = self.driver.execute_script(
+                "var rect = arguments[0].getBoundingClientRect();"
+                "return (rect.top >= 0 && rect.bottom <= window.innerHeight);",
+                target_element,
+            )
+
+            if target_in_view:
+                try:
+                    WebDriverWait(self.driver, 10).until(
+                        EC.element_to_be_clickable((by, target_selector))
+                    )
+
+                    height = self.driver.execute_script(
+                        "return arguments[0].offsetHeight;", target_element)
+                    print(f"Height in smooth_scroll: {height}")
+                    if height > 10:
+                        target_element.click()
+                    else:
+                        self.scroll_to_end()
+                        break
+
+                    print(f"Will sleep for {quit_time} seconds.")
+                    time.sleep(quit_time)
+
+                    current_url = self.driver.current_url
+                    if domain not in current_url:
+                        utils.increment_ad_click_count(log_file)
+                        print("Ad count increased.")
+                    else:
+                        print("Click did not lead to redirection. Skipping count.")
+
+                    self.driver.quit()
+
+                except TimeoutException:
+                    print(
+                        "Element did not become clickable within 10 seconds. Exiting.")
+                    self.driver.quit()
+                except Exception as e:
+                    print(f"Unexpected error during click: {e}")
+                    self.driver.quit()
+                break
+
+            scroll_amount = random.randint(
+                80, 150) if scrolling_up else -random.randint(300, 800)
+            self._scroll(scroll_amount, total_scroll_height)
+
+            scrolling_up, toggle_once = self._toggle_scroll_direction(
+                scrolling_up, toggle_once)
+            self._random_pause()

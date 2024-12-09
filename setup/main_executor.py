@@ -10,7 +10,7 @@ from setup.ad_clicker import AdClicker
 
 class MainExecutor:
     def __init__(
-            self, device_type="desk",
+            self, device_type="both",
             proxy_active=True,
             device_name="random",
             browser_name="random",
@@ -57,10 +57,12 @@ class MainExecutor:
         if click_ad:
             ad_target = random.choice(["homepage", "insurance_page"])
             if ad_target == "homepage":
-                ad_clicker.select_random_ad(ad_log_file)
+                print("Visiting Homepage")
+                ad_clicker.select_random_ad(ad_log_file, ad_target)
             else:
+                print("Visiting Homepage & Insurance Page")
                 homepage.open_insurance_page()
-                ad_clicker.select_random_ad(ad_log_file)
+                ad_clicker.select_random_ad(ad_log_file, ad_target)
         else:
             homepage.open_insurance_page()
             insurance_page.scroll_insurance_details_page()
