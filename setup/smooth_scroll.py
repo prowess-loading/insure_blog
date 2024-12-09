@@ -199,8 +199,11 @@ class SmoothScroll:
                 try:
                     time.sleep(2)
                     target_element.click()
-                    utils.increment_ad_click_count(log_file)
+                    print("ad Clicked")
+                    switch_to_new_tab(self.driver)
+                    print(f"Will sleep for {quit_time} seconds")
                     time.sleep(quit_time)
+                    utils.increment_ad_click_count(log_file)
                     self.driver.quit()
                 except (Exception) as e:
                     print(
@@ -216,3 +219,7 @@ class SmoothScroll:
             scrolling_up, toggle_up_once = self._toggle_scroll_direction(
                 scrolling_up, toggle_up_once)
             self._random_pause()
+
+
+def switch_to_new_tab(driver):
+    driver.switch_to.window(driver.window_handles[-1])

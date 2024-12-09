@@ -46,15 +46,12 @@ class AdClicker:
 
         return side_ads
 
-    def select_random_ad(self, log_file, device_type):
+    def select_random_ad(self, log_file):
         smooth_scroll = SmoothScroll(self.driver)
 
         primary_visible_ads = self.get_primary_ads()
-        all_ads = primary_visible_ads
-
-        if device_type != "mobile":
-            side_ads = self.get_side_ads()
-            all_ads += side_ads
+        side_ads = self.get_side_ads()
+        all_ads = primary_visible_ads + side_ads
 
         if not all_ads:
             print("No visible elements found with height > 0.")

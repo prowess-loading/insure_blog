@@ -32,7 +32,7 @@ def main():
         try:
             driver = executor.setup_driver()
             executor.process_run(
-                driver, click_ad, ad_click_log_file, executor.device_type)
+                driver, click_ad, ad_click_log_file)
 
         finally:
             utils.ensure_browser_quit(driver)
