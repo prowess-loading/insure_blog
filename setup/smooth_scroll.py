@@ -183,7 +183,7 @@ class SmoothScroll:
         scrolling_up = False
         toggle_up_once = False
         start_time = time.time()
-        timeout = 20
+        timeout = 25
 
         while True:
             elapsed_time = time.time() - start_time
@@ -269,7 +269,7 @@ class SmoothScroll:
         # Phase 2: Scroll Upwards
         scrolling_up = True
         start_time = time.time()
-        timeout = 20
+        timeout = 25
 
         while True:
             elapsed_time = time.time() - start_time
@@ -291,7 +291,6 @@ class SmoothScroll:
                     height = self.driver.execute_script(
                         "return arguments[0].offsetHeight;", target_element)
                     if height > 10:
-                        self.driver.set_page_load_timeout(15)
                         target_element.click()
                     else:
                         self.scroll_to_end()
@@ -308,10 +307,6 @@ class SmoothScroll:
                         print("Could not click properly.")
                     self.driver.quit()
 
-                except TimeoutException:
-                    print(
-                        "Element did not become clickable within 15 seconds. Exiting.")
-                    self.driver.quit()
                 except Exception as e:
                     print(f"Unexpected error during click: {e}")
                     self.driver.quit()
