@@ -14,7 +14,7 @@ class MainExecutor:
             proxy_active=True,
             device_name="random",
             browser_name="random",
-            region="au",
+            region="na",
             add_utm=True,
             visit_other_sites=False,
             enable_ad_click=True,
@@ -56,6 +56,7 @@ class MainExecutor:
 
         if click_ad:
             ad_target = random.choice(["homepage", "insurance_page"])
+            # ad_target = "homepage"
             if ad_target == "homepage":
                 print("Visiting Homepage")
                 ad_clicker.select_random_ad(ad_log_file, ad_target)
