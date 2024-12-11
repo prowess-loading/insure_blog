@@ -177,17 +177,19 @@ class SmoothScroll:
 
     def scroll_to_ad_click(self, target_selector, quit_time, log_file, by=By.CSS_SELECTOR):
         ad_count_incremented = False
+        self.driver_quit = False
 
-        def quit_driver_after_timeout(driver, timeout, log_file, ad_count_incremented):
+        def quit_driver_after_timeout(driver, timeout):
             def quit_driver():
-                print(
-                    f"Clicked at {datetime.now().strftime('%H:%M:%S')}")
+                print(f"Clicked at {datetime.now().strftime('%H:%M:%S')}")
                 time.sleep(timeout)
-                driver.quit()
+
+                if not self.driver_quit:
+                    driver.quit()
+                    self.driver_quit = True
 
                 if not ad_count_incremented:
                     utils.increment_ad_click_count(log_file)
-
                 print(f"Quit at {datetime.now().strftime('%H:%M:%S')}")
 
             thread = threading.Thread(target=quit_driver)
@@ -204,14 +206,16 @@ class SmoothScroll:
         toggle_up_once = False
         start_time = time.time()
         timeout = 25
-        ad_timeout = 15
+        ad_timeout = 5
 
         while True:
             elapsed_time = time.time() - start_time
             if elapsed_time > timeout:
                 print(
                     f"Timeout reached: Could not find the target ad within {timeout} seconds.")
-                self.driver.quit()
+                if not self.driver_quit:
+                    self.driver.quit()
+                    self.driver_quit = True
                 break
 
             target_in_view = self.driver.execute_script(
@@ -228,8 +232,7 @@ class SmoothScroll:
                         "return arguments[0].offsetHeight;", target_element)
 
                     if height > 10:
-                        quit_driver_after_timeout(
-                            self.driver, ad_timeout, log_file, ad_count_incremented)
+                        quit_driver_after_timeout(self.driver, ad_timeout)
                         target_element.click()
                     else:
                         self.scroll_to_end()
@@ -247,13 +250,19 @@ class SmoothScroll:
                         else:
                             print("Could not click properly.")
 
-                    self.driver.quit()
+                    if not self.driver_quit:
+                        self.driver.quit()
+                        self.driver_quit = True
 
                 except TimeoutException:
-                    self.driver.quit()
+                    if not self.driver_quit:
+                        self.driver.quit()
+                        self.driver_quit = True
                 except Exception as e:
-                    print(f"Clicked successfully in Thread")
-                    self.driver.quit()
+                    print(f"Clicked successfully in Thread, Exception: {e}")
+                    if not self.driver_quit:
+                        self.driver.quit()
+                        self.driver_quit = True
                 break
 
             scroll_amount = - \
@@ -270,17 +279,20 @@ class SmoothScroll:
         scrolling_up = False
         toggle_once = False
         ad_count_incremented = False
+        self.driver_quit = False
 
         def quit_driver_after_timeout(driver, timeout, log_file, ad_count_incremented):
             def quit_driver():
                 print(
                     f"Clicked at {datetime.now().strftime('%H:%M:%S')}")
                 time.sleep(timeout)
-                driver.quit()
+
+                if not self.driver_quit:
+                    driver.quit()
+                    self.driver_quit = True
 
                 if not ad_count_incremented:
                     utils.increment_ad_click_count(log_file)
-
                 print(f"Quit at {datetime.now().strftime('%H:%M:%S')}")
 
             thread = threading.Thread(target=quit_driver)
@@ -321,7 +333,9 @@ class SmoothScroll:
             if elapsed_time > timeout:
                 print(
                     f"Timeout reached: Could not find the target ad within {timeout} seconds.")
-                self.driver.quit()
+                if not self.driver_quit:
+                    self.driver.quit()
+                    self.driver_quit = True
                 break
 
             target_element = self.driver.find_element(by, target_selector)
@@ -335,9 +349,9 @@ class SmoothScroll:
                 try:
                     height = self.driver.execute_script(
                         "return arguments[0].offsetHeight;", target_element)
+
                     if height > 10:
-                        quit_driver_after_timeout(
-                            self.driver, ad_timeout, log_file, ad_count_incremented)
+                        quit_driver_after_timeout(self.driver, ad_timeout)
                         target_element.click()
                     else:
                         break
@@ -354,11 +368,15 @@ class SmoothScroll:
                         else:
                             print("Could not click properly.")
 
-                    self.driver.quit()
+                    if not self.driver_quit:
+                        self.driver.quit()
+                        self.driver_quit = True
 
                 except Exception as e:
                     print(f"Clicked successfully in Thread")
-                    self.driver.quit()
+                    if not self.driver_quit:
+                        self.driver.quit()
+                        self.driver_quit = True
                 break
 
             scroll_amount = random.randint(
