@@ -45,11 +45,6 @@ class AdClicker:
     def select_random_ad(self, log_file, ad_target):
         smooth_scroll = SmoothScroll(self.driver)
 
-        WebDriverWait(self.driver, 30).until(
-            lambda d: d.execute_script(
-                "return document.readyState") == "complete"
-        )
-
         primary_visible_ads = self.get_primary_ads()
         side_ads = self.get_side_ads()
         all_ads = primary_visible_ads + side_ads
