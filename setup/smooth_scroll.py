@@ -5,9 +5,8 @@ from data.utms import domain
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import threading
-from urllib3.exceptions import NewConnectionError
 from datetime import datetime
 
 
@@ -179,16 +178,17 @@ class SmoothScroll:
     def scroll_to_ad_click(self, target_selector, quit_time, log_file, by=By.CSS_SELECTOR):
         ad_count_incremented = False
 
-        def quit_driver_after_timeout(timeout, log_file, ad_count_incremented):
+        def quit_driver_after_timeout(driver, timeout, log_file, ad_count_incremented):
             def quit_driver():
-                print(f"New Thread started")
+                print(
+                    f"Clicked at {datetime.now().strftime('%H:%M:%S')}")
                 time.sleep(timeout)
-                self.driver.quit()
-                print(f"Driver quit at Threading")
+                driver.quit()
 
                 if not ad_count_incremented:
                     utils.increment_ad_click_count(log_file)
-                    print("Ad count increased after threading.")
+
+                print(f"Quit at {datetime.now().strftime('%H:%M:%S')}")
 
             thread = threading.Thread(target=quit_driver)
             thread.daemon = True
@@ -229,20 +229,20 @@ class SmoothScroll:
 
                     if height > 10:
                         quit_driver_after_timeout(
-                            ad_timeout, log_file, ad_count_incremented)
+                            self.driver, ad_timeout, log_file, ad_count_incremented)
                         target_element.click()
                     else:
                         self.scroll_to_end()
                         break
 
                     print(f"Will sleep for {quit_time} seconds.")
-                    time.sleep(quit_time)
+                    time.sleep(int(quit_time) - 1)
 
                     if not ad_count_incremented:
                         current_url = self.driver.current_url
                         if domain not in current_url:
                             utils.increment_ad_click_count(log_file)
-                            print("Ad count increased.")
+                            print("Ad loaded and count increased.")
                             ad_count_incremented = True
                         else:
                             print("Could not click properly.")
@@ -252,7 +252,7 @@ class SmoothScroll:
                 except TimeoutException:
                     self.driver.quit()
                 except Exception as e:
-                    print(f"Thread worked")
+                    print(f"Clicked successfully in Thread")
                     self.driver.quit()
                 break
 
@@ -271,16 +271,17 @@ class SmoothScroll:
         toggle_once = False
         ad_count_incremented = False
 
-        def quit_driver_after_timeout(timeout, log_file, ad_count_incremented):
+        def quit_driver_after_timeout(driver, timeout, log_file, ad_count_incremented):
             def quit_driver():
-                print(f"New Thread started")
+                print(
+                    f"Clicked at {datetime.now().strftime('%H:%M:%S')}")
                 time.sleep(timeout)
-                self.driver.quit()
-                print(f"Driver quit at Threading")
+                driver.quit()
 
                 if not ad_count_incremented:
                     utils.increment_ad_click_count(log_file)
-                    print("Ad count increased after threading.")
+
+                print(f"Quit at {datetime.now().strftime('%H:%M:%S')}")
 
             thread = threading.Thread(target=quit_driver)
             thread.daemon = True
@@ -336,19 +337,19 @@ class SmoothScroll:
                         "return arguments[0].offsetHeight;", target_element)
                     if height > 10:
                         quit_driver_after_timeout(
-                            ad_timeout, log_file, ad_count_incremented)
+                            self.driver, ad_timeout, log_file, ad_count_incremented)
                         target_element.click()
                     else:
                         break
 
                     print(f"Will sleep for {quit_time} seconds.")
-                    time.sleep(quit_time)
+                    time.sleep(int(quit_time) - 1)
 
                     if not ad_count_incremented:
                         current_url = self.driver.current_url
                         if domain not in current_url:
                             utils.increment_ad_click_count(log_file)
-                            print("Ad count increased.")
+                            print("Ad loaded and count increased.")
                             ad_count_incremented = True
                         else:
                             print("Could not click properly.")
@@ -356,7 +357,7 @@ class SmoothScroll:
                     self.driver.quit()
 
                 except Exception as e:
-                    print(f"Thread worked")
+                    print(f"Clicked successfully in Thread")
                     self.driver.quit()
                 break
 

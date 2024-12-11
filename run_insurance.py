@@ -35,8 +35,7 @@ def main():
             apple_script = f'''
             tell application "Terminal"
                 do script "cd {working_directory} && {command}; exit"
-                delay 0.5 -- Ensure the command starts before we proceed
-                tell application "System Events" to keystroke "w" using command down
+                delay 0.5 -- Ensure the command starts before we proceed                
             end tell
             '''
             subprocess.Popen(["osascript", "-e", apple_script])

@@ -23,7 +23,7 @@ class BrowserSetup:
         proxy = proxies.generate_proxy_with_region(region)
 
         browser_name = browser_name if browser_name != "random" else random.choices(
-            SUPPORTED_BROWSERS, weights=[70, 20, 10], k=1)[0]
+            SUPPORTED_BROWSERS, weights=[80, 10, 10], k=1)[0]
         print(f"Browser name: {browser_name}")
 
         if device_type == "desk":
