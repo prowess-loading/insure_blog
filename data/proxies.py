@@ -10,7 +10,8 @@ proxy_config = {
         "us": "us",
         "na": ["us", "ca"],
         "au": ["au", "nz"],
-        "as": ["jp", "sg", "hk", "kr"],
+        "as": ["jp", "sg", "kr"],
+        # "as": ["jp", "sg", "hk", "kr"],
         "eu": [
             "gb", "de", "fr", "it", "se", "be", "at", "es", "ie", "fi", "pt", "lv", "pl",
             "hu", "nl", "ch", "cz", "no", "is", "gr", "ua", "hr"

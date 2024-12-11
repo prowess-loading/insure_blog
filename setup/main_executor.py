@@ -14,7 +14,7 @@ class MainExecutor:
             proxy_active=True,
             device_name="random",
             browser_name="random",
-            region="au",                    # rd, us, na, au, as, eu
+            region="au, as",                    # rd, us, na, au, as, eu
             add_utm=True,
             visit_other_sites=False,
             enable_ad_click=True,
