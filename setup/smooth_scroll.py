@@ -79,7 +79,7 @@ class SmoothScroll:
 
             scroll_amount = - \
                 random.randint(
-                    80, 150) if scrolling_up else random.randint(300, 700)
+                    80, 150) if scrolling_up else random.randint(400, 900)
             self._scroll(scroll_amount, self.driver.execute_script(
                 "return document.body.scrollHeight"))
 
@@ -259,7 +259,7 @@ class SmoothScroll:
                         self.driver.quit()
                         self.driver_quit = True
                 except Exception as e:
-                    print(f"Clicked successfully in Thread, Exception: {e}")
+                    print(f"Clicked successfully in Thread")
                     if not self.driver_quit:
                         self.driver.quit()
                         self.driver_quit = True

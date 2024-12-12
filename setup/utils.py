@@ -24,7 +24,7 @@ def target_url(add_utm):
         return random.choice(main_page)
 
 
-def open_url_with_retry(driver, url, max_retries=3, retry_delay=3):
+def open_url_with_retry(driver, url, max_retries=3, retry_delay=1):
     for attempt in range(max_retries):
         try:
             driver.get(url)
@@ -44,13 +44,13 @@ def open_url_with_retry(driver, url, max_retries=3, retry_delay=3):
             break
 
         except TimeoutException:
-            print(
-                f"Timeout occurred. Retrying... ({attempt + 1}/{max_retries})")
-            sleep(retry_delay)
+            print(f"Timeout occurred.")
+            driver.quit()
+            break
         except Exception as e:
-            print(
-                f"An error occurred: {e}. Retrying... ({attempt + 1}/{max_retries})")
-            sleep(retry_delay)
+            print(f"An error occurred: {e}.")
+            driver.quit()
+            break
 
     else:
         print("Failed to load the page after multiple attempts.")

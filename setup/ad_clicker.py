@@ -46,9 +46,9 @@ class AdClicker:
         smooth_scroll = SmoothScroll(self.driver)
 
         primary_visible_ads = self.get_primary_ads()
-        side_ads = self.get_side_ads()
 
         if random.random() < 0.2:  # 20% chance
+            side_ads = self.get_side_ads()
             all_ads = primary_visible_ads + side_ads
         else:
             all_ads = primary_visible_ads
