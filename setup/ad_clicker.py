@@ -47,7 +47,11 @@ class AdClicker:
 
         primary_visible_ads = self.get_primary_ads()
         side_ads = self.get_side_ads()
-        all_ads = primary_visible_ads + side_ads
+
+        if random.random() < 0.2:  # 20% chance
+            all_ads = primary_visible_ads + side_ads
+        else:
+            all_ads = primary_visible_ads
 
         if not all_ads:
             print("No visible ad found")
